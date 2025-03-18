@@ -6,6 +6,9 @@
     "version" : "1.0.0"
   },
   "servers" : [ {
+    "url" : "https://seng2021-production.up.railway.app/",
+    "description" : "Deployed server"
+  }, {
     "url" : "http://localhost:3000/api",
     "description" : "Local development server"
   } ],
