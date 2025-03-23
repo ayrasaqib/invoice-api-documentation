@@ -8,9 +8,6 @@
   "servers" : [ {
     "url" : "https://seng2021-production-e448.up.railway.app/api",
     "description" : "Deployed server"
-  }, {
-    "url" : "http://localhost:3000/api",
-    "description" : "Local development server"
   } ],
   "tags" : [ {
     "name" : "Working routes",
@@ -31,7 +28,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/admin_register_body"
+                "$ref" : "#/components/schemas/AdminRegisterRequest"
               }
             }
           },
@@ -43,7 +40,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200"
+                  "$ref" : "#/components/schemas/SessionId"
                 }
               }
             }
@@ -71,7 +68,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/admin_login_body"
+                "$ref" : "#/components/schemas/AdminLoginRequest"
               }
             }
           },
@@ -83,7 +80,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200"
+                  "$ref" : "#/components/schemas/SessionId"
                 }
               }
             }
@@ -111,7 +108,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/admin_logout_body"
+                "$ref" : "#/components/schemas/SessionId"
               }
             }
           },
@@ -145,7 +142,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_1"
+                  "$ref" : "#/components/schemas/HealthCheck"
                 }
               }
             }
@@ -155,7 +152,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_500"
+                  "$ref" : "#/components/schemas/HealthError"
                 }
               }
             }
@@ -202,7 +199,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_2"
+                  "$ref" : "#/components/schemas/InvoiceId"
                 }
               }
             }
@@ -308,7 +305,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/invoice_validate_body"
+                "$ref" : "#/components/schemas/ValidateRequest"
               }
             }
           },
@@ -320,7 +317,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_3"
+                  "$ref" : "#/components/schemas/ValidateResponse"
                 }
               }
             }
@@ -360,7 +357,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_4"
+                  "$ref" : "#/components/schemas/InvoicesList"
                 }
               }
             }
@@ -424,7 +421,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_5"
+                  "$ref" : "#/components/schemas/InvoiceObject"
                 }
               }
             }
@@ -485,7 +482,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/invoice_invoiceid_body"
+                "$ref" : "#/components/schemas/UpdateRequest"
               }
             }
           },
@@ -534,15 +531,106 @@
   },
   "components" : {
     "schemas" : {
+      "AdminRegisterRequest" : {
+        "type" : "object",
+        "properties" : {
+          "companyName" : {
+            "type" : "string",
+            "example" : "Candlecraft Pty Ltd"
+          },
+          "email" : {
+            "type" : "string",
+            "example" : "candle.craft@gmail.com"
+          },
+          "password" : {
+            "type" : "string",
+            "example" : "candles123"
+          }
+        }
+      },
+      "AdminLoginRequest" : {
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "example" : "candle.craft@gmail.com"
+          },
+          "password" : {
+            "type" : "string",
+            "example" : "candles123"
+          }
+        }
+      },
+      "SessionId" : {
+        "type" : "object",
+        "properties" : {
+          "sessionId" : {
+            "type" : "integer"
+          }
+        },
+        "example" : {
+          "sessionId" : 53896565
+        }
+      },
       "Error" : {
         "type" : "object",
         "properties" : {
           "error" : {
+            "type" : "string",
+            "example" : "message to describe the error"
+          }
+        }
+      },
+      "HealthCheck" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "enum" : [ "success" ]
+          },
+          "serviceUptime" : {
+            "type" : "string"
+          },
+          "memoryUsage" : {
+            "type" : "string"
+          },
+          "database" : {
+            "type" : "string",
+            "enum" : [ "connected" ]
+          }
+        },
+        "example" : {
+          "status" : "success",
+          "serviceUptime" : "1 hour, 12 minutes",
+          "memoryUsage" : "30MB",
+          "database" : "connected"
+        }
+      },
+      "HealthError" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "enum" : [ "fail" ]
+          },
+          "errorMessage" : {
             "type" : "string"
           }
         },
         "example" : {
-          "error" : "message to describe the error"
+          "status" : "fail",
+          "errorMessage" : "The database is not connected"
+        }
+      },
+      "InvoiceId" : {
+        "type" : "object",
+        "properties" : {
+          "invoiceId" : {
+            "type" : "integer"
+          }
+        },
+        "example" : {
+          "invoiceId" : 28746393
         }
       },
       "Order" : {
@@ -643,115 +731,7 @@
           "name" : "invoice"
         }
       },
-      "admin_register_body" : {
-        "type" : "object",
-        "properties" : {
-          "companyName" : {
-            "type" : "string"
-          },
-          "email" : {
-            "type" : "string"
-          },
-          "password" : {
-            "type" : "string"
-          }
-        },
-        "example" : {
-          "companyName" : "Candlecraft Pty Ltd",
-          "email" : "candle.craft@gmail.com",
-          "password" : "candles123"
-        }
-      },
-      "inline_response_200" : {
-        "type" : "object",
-        "properties" : {
-          "sessionId" : {
-            "type" : "integer"
-          }
-        },
-        "example" : {
-          "sessionId" : 53896565
-        }
-      },
-      "admin_login_body" : {
-        "type" : "object",
-        "properties" : {
-          "email" : {
-            "type" : "string"
-          },
-          "password" : {
-            "type" : "string"
-          }
-        },
-        "example" : {
-          "email" : "candle.craft@gmail.com",
-          "password" : "candles123"
-        }
-      },
-      "admin_logout_body" : {
-        "type" : "object",
-        "properties" : {
-          "sessionId" : {
-            "type" : "integer"
-          }
-        },
-        "example" : {
-          "sessionId" : 53896565
-        }
-      },
-      "inline_response_200_1" : {
-        "type" : "object",
-        "properties" : {
-          "status" : {
-            "type" : "string",
-            "enum" : [ "success" ]
-          },
-          "serviceUptime" : {
-            "type" : "string"
-          },
-          "memoryUsage" : {
-            "type" : "string"
-          },
-          "database" : {
-            "type" : "string",
-            "enum" : [ "connected" ]
-          }
-        },
-        "example" : {
-          "status" : "success",
-          "serviceUptime" : "1 hour, 12 minutes",
-          "memoryUsage" : "30MB",
-          "database" : "connected"
-        }
-      },
-      "inline_response_500" : {
-        "type" : "object",
-        "properties" : {
-          "status" : {
-            "type" : "string",
-            "enum" : [ "fail" ]
-          },
-          "errorMessage" : {
-            "type" : "string"
-          }
-        },
-        "example" : {
-          "status" : "fail",
-          "errorMessage" : "The database is not connected"
-        }
-      },
-      "inline_response_200_2" : {
-        "type" : "object",
-        "properties" : {
-          "invoiceId" : {
-            "type" : "integer"
-          }
-        },
-        "example" : {
-          "invoiceId" : 28746393
-        }
-      },
-      "invoice_validate_body" : {
+      "ValidateRequest" : {
         "type" : "object",
         "properties" : {
           "invoice" : {
@@ -761,7 +741,7 @@
           }
         }
       },
-      "inline_response_200_3" : {
+      "ValidateResponse" : {
         "type" : "object",
         "properties" : {
           "validated" : {
@@ -776,18 +756,18 @@
           "message" : "Invoice is in valid UBL 2.1 XML format"
         }
       },
-      "inline_response_200_4" : {
+      "InvoicesList" : {
         "type" : "object",
         "properties" : {
           "invoices" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/inline_response_200_4_invoices"
+              "$ref" : "#/components/schemas/InvoicesList_invoices"
             }
           }
         }
       },
-      "inline_response_200_5" : {
+      "InvoiceObject" : {
         "type" : "object",
         "properties" : {
           "invoiceId" : {
@@ -817,12 +797,12 @@
           "items" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/inline_response_200_5_items"
+              "$ref" : "#/components/schemas/InvoiceObject_items"
             }
           }
         }
       },
-      "invoice_invoiceid_body" : {
+      "UpdateRequest" : {
         "type" : "object",
         "properties" : {
           "toUpdate" : {
@@ -919,7 +899,7 @@
           }
         }
       },
-      "inline_response_200_4_invoices" : {
+      "InvoicesList_invoices" : {
         "type" : "object",
         "properties" : {
           "invoiceId" : {
@@ -944,7 +924,7 @@
           }
         }
       },
-      "inline_response_200_5_items" : {
+      "InvoiceObject_items" : {
         "type" : "object",
         "properties" : {
           "description" : {
@@ -969,16 +949,6 @@
           "application/json" : {
             "schema" : {
               "$ref" : "#/components/schemas/Error"
-            }
-          }
-        }
-      },
-      "SessionId" : {
-        "description" : "Id for the user's current logged in session",
-        "content" : {
-          "application/json" : {
-            "schema" : {
-              "$ref" : "#/components/schemas/inline_response_200"
             }
           }
         }
