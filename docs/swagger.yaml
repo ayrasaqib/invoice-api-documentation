@@ -783,16 +783,8 @@
             "example" : "Candlecraft Pty Ltd"
           },
           "payableAmount" : {
-            "type" : "number",
-            "example" : 100
-          },
-          "currencyCode" : {
             "type" : "string",
-            "example" : "AUD"
-          },
-          "salesOrderId" : {
-            "type" : "integer",
-            "example" : 765489
+            "example" : "USD 100"
           },
           "items" : {
             "type" : "array",
@@ -906,10 +898,6 @@
             "type" : "integer",
             "example" : 123456
           },
-          "salesOrderId" : {
-            "type" : "integer",
-            "example" : 765489
-          },
           "issueDate" : {
             "type" : "string",
             "example" : "2025-03-02"
@@ -927,17 +915,21 @@
       "InvoiceObject_items" : {
         "type" : "object",
         "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "Candle"
+          },
           "description" : {
             "type" : "string",
             "example" : "Scented soy candle"
           },
-          "amount" : {
-            "type" : "integer",
-            "example" : 10
-          },
-          "unitCode" : {
+          "price" : {
             "type" : "string",
-            "example" : "PCS"
+            "example" : "USD 10"
+          },
+          "quantity" : {
+            "type" : "string",
+            "example" : "10 PCS"
           }
         }
       }
