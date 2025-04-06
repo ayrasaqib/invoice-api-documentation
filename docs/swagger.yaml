@@ -10,16 +10,16 @@
     "description" : "Deployed server"
   } ],
   "tags" : [ {
-    "name" : "Working routes",
-    "description" : "Routes for the API which are functioning"
+    "name" : "Current routes",
+    "description" : "Updated routes for the API which are functioning"
   }, {
-    "name" : "In progress routes",
-    "description" : "Routes for the API which are still under development"
+    "name" : "Outdated routes",
+    "description" : "Routes for the API which have since been updated"
   } ],
   "paths" : {
     "/v1/admin/register" : {
       "post" : {
-        "tags" : [ "Working routes" ],
+        "tags" : [ "Current routes" ],
         "summary" : "Register a new company account",
         "description" : "Subscribe to the invoice generation service by registering a company account",
         "operationId" : "adminRegister",
@@ -60,7 +60,7 @@
     },
     "/v1/admin/login" : {
       "post" : {
-        "tags" : [ "Working routes" ],
+        "tags" : [ "Current routes" ],
         "summary" : "Login to an account",
         "operationId" : "adminLogin",
         "requestBody" : {
@@ -100,7 +100,7 @@
     },
     "/v1/admin/logout" : {
       "post" : {
-        "tags" : [ "In progress routes" ],
+        "tags" : [ "Current routes" ],
         "summary" : "Logout from an active session",
         "operationId" : "adminLogout",
         "requestBody" : {
@@ -133,7 +133,7 @@
     },
     "/health" : {
       "get" : {
-        "tags" : [ "Working routes" ],
+        "tags" : [ "Current routes" ],
         "summary" : "Indicates the aliveness of the service",
         "operationId" : "getHealth",
         "responses" : {
@@ -162,7 +162,77 @@
     },
     "/v1/invoice/create" : {
       "post" : {
-        "tags" : [ "Working routes" ],
+        "tags" : [ "Outdated routes" ],
+        "summary" : "Create new invoice",
+        "description" : "Use data from a document (e.g. order document) to create an invoice resource",
+        "operationId" : "v1CreateInvoice",
+        "parameters" : [ {
+          "name" : "sessionid",
+          "in" : "header",
+          "description" : "sessionid used for authentication",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "number"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Order used to create invoice resource",
+          "content" : {
+            "application/xml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/V1Order"
+              }
+            },
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/V1Order"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Invoice resource created successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InvoiceId"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid input provided - not in the correct format",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorised - sessionId is not valid",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "Authentication" : [ ]
+        } ]
+      }
+    },
+    "/v2/invoice/create" : {
+      "post" : {
+        "tags" : [ "Current routes" ],
         "summary" : "Create new invoice",
         "description" : "Use data from a document (e.g. order document) to create an invoice resource",
         "operationId" : "createInvoice",
@@ -232,7 +302,71 @@
     },
     "/v1/invoice/{invoiceid}/xml" : {
       "get" : {
-        "tags" : [ "Working routes" ],
+        "tags" : [ "Outdated routes" ],
+        "summary" : "Converts an invoice resource into UBL 2.1 XML",
+        "description" : "Converts invoice with the given invoiceid to UBL 2.1 XML format and returns it",
+        "operationId" : "v1InvoiceToXml",
+        "parameters" : [ {
+          "name" : "sessionid",
+          "in" : "header",
+          "description" : "sessionid used for authentication",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "number"
+          }
+        }, {
+          "name" : "invoiceid",
+          "in" : "path",
+          "description" : "The id used to identify invoice resource",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "number"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Invoice in XML successfully generated",
+            "content" : {
+              "application/xml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/V1InvoiceXml"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "An invoice with the given invoiceid was not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorised - sessionId is not valid",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "Authentication" : [ ]
+        } ]
+      }
+    },
+    "/v2/invoice/{invoiceid}/xml" : {
+      "get" : {
+        "tags" : [ "Current routes" ],
         "summary" : "Converts an invoice resource into UBL 2.1 XML",
         "description" : "Converts invoice with the given invoiceid to UBL 2.1 XML format and returns it",
         "operationId" : "invoiceToXml",
@@ -296,7 +430,7 @@
     },
     "/v1/invoice/validate" : {
       "post" : {
-        "tags" : [ "Working routes" ],
+        "tags" : [ "Current routes" ],
         "summary" : "Submits an invoice for validation",
         "description" : "Validates that invoice in XML matches UBL formatting and schema",
         "operationId" : "validateInvoice",
@@ -327,7 +461,70 @@
     },
     "/v1/invoices/list" : {
       "get" : {
-        "tags" : [ "Working routes" ],
+        "tags" : [ "Outdated routes" ],
+        "summary" : "Lists all invoices by buyer party",
+        "operationId" : "v1ListInvoices",
+        "parameters" : [ {
+          "name" : "sessionid",
+          "in" : "header",
+          "description" : "sessionid used for authentication",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "number"
+          }
+        }, {
+          "name" : "partyNameBuyer",
+          "in" : "query",
+          "description" : "buyer party name to filter invoices by",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful retrieval of invoices list",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/V1InvoicesList"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid input provided - partyNameBuyer has invalid characters",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorised - sessionId is not valid",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "Authentication" : [ ]
+        } ]
+      }
+    },
+    "/v2/invoices/list" : {
+      "get" : {
+        "tags" : [ "Current routes" ],
         "summary" : "Lists all invoices by buyer party",
         "operationId" : "listInvoices",
         "parameters" : [ {
@@ -390,10 +587,10 @@
     },
     "/v1/invoice/{invoiceid}" : {
       "get" : {
-        "tags" : [ "Working routes" ],
+        "tags" : [ "Outdated routes" ],
         "summary" : "View an invoice",
         "description" : "View an invoice using its invoiceid",
-        "operationId" : "viewInvoice",
+        "operationId" : "v1ViewInvoice",
         "parameters" : [ {
           "name" : "sessionid",
           "in" : "header",
@@ -421,7 +618,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/InvoiceObject"
+                  "$ref" : "#/components/schemas/V1InvoiceObject"
                 }
               }
             }
@@ -452,7 +649,7 @@
         } ]
       },
       "put" : {
-        "tags" : [ "In progress routes" ],
+        "tags" : [ "Current routes" ],
         "summary" : "Update information in an invoice",
         "description" : "Update provided information about an invoice resource",
         "operationId" : "updateInvoice",
@@ -498,6 +695,70 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "An invoice with the given invoiceid was not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorised - sessionId is not valid",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "Authentication" : [ ]
+        } ]
+      }
+    },
+    "/v2/invoice/{invoiceid}" : {
+      "get" : {
+        "tags" : [ "Current routes" ],
+        "summary" : "View an invoice",
+        "description" : "View an invoice using its invoiceid",
+        "operationId" : "viewInvoice",
+        "parameters" : [ {
+          "name" : "sessionid",
+          "in" : "header",
+          "description" : "sessionid used for authentication",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "number"
+          }
+        }, {
+          "name" : "invoiceid",
+          "in" : "path",
+          "description" : "invoiceid used to identify invoice resource",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "number"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful retrieval of invoice",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InvoiceObject"
                 }
               }
             }
@@ -633,7 +894,7 @@
           "invoiceId" : 28746393
         }
       },
-      "Order" : {
+      "V1Order" : {
         "type" : "object",
         "properties" : {
           "salesOrderId" : {
@@ -653,17 +914,17 @@
             "example" : "AUD"
           },
           "buyerCustomerParty" : {
-            "$ref" : "#/components/schemas/Order_buyerCustomerParty"
+            "$ref" : "#/components/schemas/V1Order_buyerCustomerParty"
           },
           "sellerSupplierParty" : {
-            "$ref" : "#/components/schemas/Order_sellerSupplierParty"
+            "$ref" : "#/components/schemas/V1Order_sellerSupplierParty"
           },
           "deliveryAddress" : {
             "type" : "string",
             "example" : "56A Avon Way, Sydney, Australia, 2345"
           },
           "deliveryPeriod" : {
-            "$ref" : "#/components/schemas/Order_deliveryPeriod"
+            "$ref" : "#/components/schemas/V1Order_deliveryPeriod"
           },
           "deliveryTerms" : {
             "type" : "string",
@@ -676,9 +937,103 @@
           "orderLine" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/Order_orderLine"
+              "$ref" : "#/components/schemas/V1Order_orderLine"
             }
           }
+        }
+      },
+      "Order" : {
+        "type" : "object",
+        "properties" : {
+          "orderId" : {
+            "type" : "integer",
+            "example" : 123456
+          },
+          "issueDate" : {
+            "type" : "string",
+            "example" : "2025-01-14"
+          },
+          "documentCurrencyCode" : {
+            "type" : "string",
+            "example" : "AUD"
+          },
+          "buyerCustomerParty" : {
+            "$ref" : "#/components/schemas/V1Order_buyerCustomerParty"
+          },
+          "sellerSupplierParty" : {
+            "$ref" : "#/components/schemas/V1Order_sellerSupplierParty"
+          },
+          "deliveryLocation" : {
+            "type" : "string",
+            "example" : "56A Avon Way, Sydney, Australia, 2345"
+          },
+          "requestedDeliveryPeriod" : {
+            "$ref" : "#/components/schemas/V1Order_deliveryPeriod"
+          },
+          "deliveryTerms" : {
+            "type" : "string",
+            "example" : "1% deduction for late delivery"
+          },
+          "payableAmount" : {
+            "type" : "number",
+            "example" : 100
+          },
+          "orderLine" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/V1Order_orderLine"
+            }
+          }
+        }
+      },
+      "V1InvoiceXml" : {
+        "type" : "object",
+        "properties" : {
+          "invoiceId" : {
+            "type" : "integer",
+            "example" : 123456
+          },
+          "issueDate" : {
+            "type" : "string",
+            "example" : "2025-03-02"
+          },
+          "invoiceStartDate" : {
+            "type" : "string",
+            "example" : "2025-03-14"
+          },
+          "invoiceEndDate" : {
+            "type" : "string",
+            "example" : "2025-04-02"
+          },
+          "documentCurrencyCode" : {
+            "type" : "string",
+            "example" : "AUD"
+          },
+          "salesOrderId" : {
+            "type" : "integer",
+            "example" : 123456
+          },
+          "accountingSupplierParty" : {
+            "type" : "string",
+            "example" : "Candlecraft Pty Ltd"
+          },
+          "accountingCustomerParty" : {
+            "type" : "string",
+            "example" : "Dusk"
+          },
+          "payableAmount" : {
+            "type" : "number",
+            "example" : 300
+          },
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/V1InvoiceXml_items"
+            }
+          }
+        },
+        "xml" : {
+          "name" : "invoice"
         }
       },
       "InvoiceXml" : {
@@ -687,10 +1042,6 @@
           "invoiceId" : {
             "type" : "integer",
             "example" : 123456
-          },
-          "salesOrderId" : {
-            "type" : "integer",
-            "example" : 98765
           },
           "issueDate" : {
             "type" : "string",
@@ -756,6 +1107,17 @@
           "message" : "Invoice is in valid UBL 2.1 XML format"
         }
       },
+      "V1InvoicesList" : {
+        "type" : "object",
+        "properties" : {
+          "invoices" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/V1InvoicesList_invoices"
+            }
+          }
+        }
+      },
       "InvoicesList" : {
         "type" : "object",
         "properties" : {
@@ -763,6 +1125,37 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/InvoicesList_invoices"
+            }
+          }
+        }
+      },
+      "V1InvoiceObject" : {
+        "type" : "object",
+        "properties" : {
+          "invoiceId" : {
+            "type" : "integer",
+            "example" : 123456
+          },
+          "salesOrderId" : {
+            "type" : "integer",
+            "example" : 123456
+          },
+          "issueDate" : {
+            "type" : "string",
+            "example" : "2025-03-02"
+          },
+          "partyNameBuyer" : {
+            "type" : "string",
+            "example" : "Candlecraft Pty Ltd"
+          },
+          "payableAmount" : {
+            "type" : "string",
+            "example" : "USD 100"
+          },
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/V1InvoiceObject_items"
             }
           }
         }
@@ -810,7 +1203,7 @@
           "newData" : "$130.00"
         }
       },
-      "Order_buyerCustomerParty" : {
+      "V1Order_buyerCustomerParty" : {
         "type" : "object",
         "properties" : {
           "name" : {
@@ -823,7 +1216,7 @@
           }
         }
       },
-      "Order_sellerSupplierParty" : {
+      "V1Order_sellerSupplierParty" : {
         "type" : "object",
         "properties" : {
           "name" : {
@@ -836,7 +1229,7 @@
           }
         }
       },
-      "Order_deliveryPeriod" : {
+      "V1Order_deliveryPeriod" : {
         "type" : "object",
         "properties" : {
           "startDate" : {
@@ -849,7 +1242,7 @@
           }
         }
       },
-      "Order_orderLine" : {
+      "V1Order_orderLine" : {
         "type" : "object",
         "properties" : {
           "itemId" : {
@@ -870,6 +1263,23 @@
           }
         }
       },
+      "V1InvoiceXml_items" : {
+        "type" : "object",
+        "properties" : {
+          "itemId" : {
+            "type" : "integer",
+            "example" : 8765
+          },
+          "lineExtensionAmount" : {
+            "type" : "number",
+            "example" : 300
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "Candle"
+          }
+        }
+      },
       "InvoiceXml_items" : {
         "type" : "object",
         "properties" : {
@@ -877,7 +1287,7 @@
             "type" : "integer",
             "example" : 8765
           },
-          "quantity" : {
+          "price" : {
             "type" : "integer",
             "example" : 50
           },
@@ -885,9 +1295,34 @@
             "type" : "number",
             "example" : 300
           },
-          "description" : {
+          "name" : {
             "type" : "string",
-            "example" : "Scented soy candles"
+            "example" : "Candle"
+          }
+        }
+      },
+      "V1InvoicesList_invoices" : {
+        "type" : "object",
+        "properties" : {
+          "invoiceId" : {
+            "type" : "integer",
+            "example" : 123456
+          },
+          "salesOrderId" : {
+            "type" : "integer",
+            "example" : 123456
+          },
+          "issueDate" : {
+            "type" : "string",
+            "example" : "2025-03-02"
+          },
+          "partyNameBuyer" : {
+            "type" : "string",
+            "example" : "Candlecraft Pty Ltd"
+          },
+          "payableAmount" : {
+            "type" : "string",
+            "example" : "AUD 100"
           }
         }
       },
@@ -909,6 +1344,19 @@
           "payableAmount" : {
             "type" : "string",
             "example" : "AUD 100"
+          }
+        }
+      },
+      "V1InvoiceObject_items" : {
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string",
+            "example" : "Scented soy candle"
+          },
+          "amount" : {
+            "type" : "string",
+            "example" : "10 PCS"
           }
         }
       },
