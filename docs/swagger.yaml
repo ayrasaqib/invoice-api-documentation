@@ -687,7 +687,14 @@
         },
         "responses" : {
           "200" : {
-            "description" : "Invoice successfully updated"
+            "description" : "Invoice successfully updated",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UpdateResponse"
+                }
+              }
+            }
           },
           "400" : {
             "description" : "Invalid input provided - newData is the same as current data, newData is an empty string or invalid (e.g. negative), toUpdate value is not part of Enum",
@@ -1192,15 +1199,24 @@
         "properties" : {
           "toUpdate" : {
             "type" : "string",
-            "enum" : [ "payableAmount", "invoiceStartDate", "invoiceEndDate" ]
+            "enum" : [ "PayableAmount", "IssueDate", "CurrencyCode" ]
           },
           "newData" : {
-            "type" : "string"
+            "type" : "number"
           }
         },
         "example" : {
           "toUpdate" : "payableAmount",
-          "newData" : "$130.00"
+          "newData" : 130
+        }
+      },
+      "UpdateResponse" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "Invoice updated successfully."
+          }
         }
       },
       "V1Order_buyerCustomerParty" : {
