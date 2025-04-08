@@ -116,7 +116,14 @@
         },
         "responses" : {
           "200" : {
-            "description" : "User successfully logged out"
+            "description" : "User successfully logged out",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LogoutResponse"
+                }
+              }
+            }
           },
           "401" : {
             "description" : "Unauthorised - sessionId is not valid",
@@ -846,6 +853,15 @@
           "error" : {
             "type" : "string",
             "example" : "message to describe the error"
+          }
+        }
+      },
+      "LogoutResponse" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "Logged out successfully."
           }
         }
       },
