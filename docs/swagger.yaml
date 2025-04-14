@@ -103,17 +103,17 @@
         "tags" : [ "Current routes" ],
         "summary" : "Logout from an active session",
         "operationId" : "adminLogout",
-        "requestBody" : {
-          "description" : "sessionId of the active session to logout from",
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SessionId"
-              }
-            }
-          },
-          "required" : true
-        },
+        "parameters" : [ {
+          "name" : "sessionid",
+          "in" : "header",
+          "description" : "sessionid used for authentication",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "number"
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "User successfully logged out",
@@ -135,7 +135,10 @@
               }
             }
           }
-        }
+        },
+        "security" : [ {
+          "Authentication" : [ ]
+        } ]
       }
     },
     "/health" : {
